@@ -1,24 +1,30 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { analyzeAthleteForm, AnalyzeAthleteFormOutput } from '@/ai/flows/analyze-athlete-form';
 import { segmentExerciseVideo, SegmentExerciseVideoOutput } from '@/ai/flows/segment-exercise-videos';
-import type { Test } from '@/lib/data';
+import { getTestById, Test } from '@/lib/data';
 import { Loader2, Upload, Video } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { AnalysisResults } from './analysis-results';
 import { BenchmarkDisplay } from './benchmark-display';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export function TestAnalysisClient({ test }: { test: Test }) {
+export function TestAnalysisClient({ testId }: { testId: string }) {
+  const [test, setTest] = useState<Test | undefined>(undefined);
   const [file, setFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [formAnalysis, setFormAnalysis] = useState<AnalyzeAthleteFormOutput | null>(null);
   const [segmentation, setSegmentation] = useState<SegmentExerciseVideoOutput | null>(null);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setTest(getTestById(testId));
+  }, [testId]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -32,7 +38,7 @@ export function TestAnalysisClient({ test }: { test: Test }) {
   };
 
   const handleAnalyze = async () => {
-    if (!file) {
+    if (!file || !test) {
       toast({ title: 'Error', description: 'Please select a video file first.', variant: 'destructive' });
       return;
     }
@@ -80,6 +86,24 @@ export function TestAnalysisClient({ test }: { test: Test }) {
       description: 'Your verified performance data has been sent to SAI for evaluation.',
     });
   };
+
+  if (!test) {
+    return (
+      <div className="grid gap-6 lg:grid-cols-3">
+        <Card className="lg:col-span-1">
+          <CardHeader>
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-4 w-64" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="aspect-video w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   const reps = segmentation?.segments?.length || 0;
 

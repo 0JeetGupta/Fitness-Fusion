@@ -34,7 +34,7 @@ export default function TestPage({ params }: { params: { testId: string } }) {
             </div>
           </div>
 
-          <TestAnalysisClient test={test} />
+          <TestAnalysisClient testId={test.id} />
         </div>
       </main>
     </>
