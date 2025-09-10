@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "badge-jump-1",
+      "description": "Bronze medal for vertical jump",
+      "imageUrl": "https://picsum.photos/seed/bj1/200/200",
+      "imageHint": "bronze medal"
+    },
+    {
+      "id": "badge-run-1",
+      "description": "Bronze medal for shuttle run",
+      "imageUrl": "https://picsum.photos/seed/br1/200/200",
+      "imageHint": "bronze medal"
+    },
+    {
+      "id": "badge-situp-1",
+      "description": "Bronze medal for sit-ups",
+      "imageUrl": "https://picsum.photos/seed/bs1/200/200",
+      "imageHint": "bronze medal"
+    },
+    {
+      "id": "badge-endurance-1",
+      "description": "Bronze medal for endurance run",
+      "imageUrl": "https://picsum.photos/seed/be1/200/200",
+      "imageHint": "bronze medal"
+    },
+    {
+      "id": "badge-jump-2",
+      "description": "Silver medal for vertical jump",
+      "imageUrl": "https://picsum.photos/seed/sj1/200/200",
+      "imageHint": "silver medal"
+    },
+    {
+      "id": "badge-run-2",
+      "description": "Silver medal for shuttle run",
+      "imageUrl": "https://picsum.photos/seed/sr1/200/200",
+      "imageHint": "silver medal"
+    }
+  ]
 }

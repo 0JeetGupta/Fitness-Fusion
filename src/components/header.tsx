@@ -1,0 +1,76 @@
+import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from './ui/button';
+
+function KhelKhojIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 2a10 10 0 1 0 10 10" />
+      <path d="m15.31 3.23.89 1.79" />
+      <path d="M21.17 8.68l-1.79.89" />
+      <path d="M21.17 15.32l-1.79-.89" />
+      <path d="M15.31 20.77l.89-1.79" />
+      <path d="m8.69 20.77-.89-1.79" />
+      <path d="M2.83 15.32l1.79-.89" />
+      <path d="M2.83 8.68l1.79.89" />
+      <path d="m8.69 3.23-.89 1.79" />
+    </svg>
+  );
+}
+
+export function Header() {
+  return (
+    <header className="bg-card shadow-sm">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+        <Link href="/" className="flex items-center gap-2">
+          <KhelKhojIcon className="h-6 w-6 text-primary" />
+          <span className="text-xl font-bold font-headline text-foreground">
+            Khel Khoj
+          </span>
+        </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src="https://picsum.photos/seed/You/100/100" alt="User" />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end" forceMount>
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">Athlete</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  athlete@khelkhoj.com
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Settings</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Logout</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+  );
+}
