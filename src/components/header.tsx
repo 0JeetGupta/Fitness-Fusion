@@ -152,18 +152,20 @@ export function NavMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Dashboard
-            </NavigationMenuLink>
-          </Link>
+          <NavigationMenuLink
+            href="/"
+            className={navigationMenuTriggerStyle()}
+          >
+            Dashboard
+          </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <Link href="/recommendations" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Recommendations
-            </NavigationMenuLink>
-          </Link>
+          <NavigationMenuLink
+            href="/recommendations"
+            className={navigationMenuTriggerStyle()}
+          >
+            Recommendations
+          </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
@@ -189,7 +191,7 @@ export function Header() {
             <UserNav />
           </div>
           <div className="md:hidden">
-             <Sheet>
+            <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Menu className="h-6 w-6" />
@@ -198,7 +200,7 @@ export function Header() {
               <SheetContent>
                 <SheetHeader>
                   <SheetTitle>
-                     <Link href="/" className="flex items-center gap-2">
+                    <Link href="/" className="flex items-center gap-2">
                       <KhelKhojIcon className="h-6 w-6 text-primary" />
                       <span className="text-xl font-bold font-headline text-foreground">
                         Khel Khoj
@@ -209,9 +211,9 @@ export function Header() {
                 <div className="py-4">
                   <NavMenu />
                 </div>
-                 <div className="absolute bottom-4 right-4">
-                   <UserNav />
-                 </div>
+                <div className="absolute bottom-4 right-4">
+                  <UserNav />
+                </div>
               </SheetContent>
             </Sheet>
           </div>

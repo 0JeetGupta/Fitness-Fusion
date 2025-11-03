@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -34,6 +34,7 @@ import { useToast } from '@/hooks/use-toast';
 import { getAiRecommendations } from './actions';
 import Image from 'next/image';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import ReactMarkdown from 'react-markdown';
 
 type RecommendationFormValues = {
   age: number;
@@ -74,8 +75,9 @@ function RecommendationResults({ results }: { results: any }) {
           </h3>
           <div
             className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-4"
-            dangerouslySetInnerHTML={{ __html: results.workoutPlan.replace(/\n/g, '<br>') }}
-          />
+          >
+            <ReactMarkdown>{results.workoutPlan}</ReactMarkdown>
+          </div>
         </div>
         <div>
           <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
@@ -84,8 +86,9 @@ function RecommendationResults({ results }: { results: any }) {
           </h3>
           <div
             className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-4"
-            dangerouslySetInnerHTML={{ __html: results.dietPlan.replace(/\n/g, '<br>') }}
-          />
+          >
+             <ReactMarkdown>{results.dietPlan}</ReactMarkdown>
+          </div>
         </div>
       </CardContent>
     </Card>
@@ -187,7 +190,7 @@ export default function RecommendationsPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Form {...form}>
+                <FormProvider {...form}>
                   <form
                     onSubmit={form.handleSubmit(handleSubmit)}
                     className="space-y-6"
@@ -362,7 +365,6 @@ export default function RecommendationsPage() {
                             Providing a photo helps the AI give a more accurate
                             recommendation.
                           </FormDescription>
-                          <FormMessage />
                         </FormItem>
 
                     {photoPreview && (
@@ -391,7 +393,7 @@ export default function RecommendationsPage() {
                       )}
                     </Button>
                   </form>
-                </Form>
+                </FormProvider>
                 {isLoading && (
                   <Alert className="mt-4 text-primary border-primary">
                     <Bot className="h-4 w-4 !text-primary" />
