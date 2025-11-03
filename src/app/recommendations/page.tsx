@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, FormProvider, Controller } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -46,7 +46,7 @@ type RecommendationFormValues = {
     | 'moderately_active'
     | 'very_active';
   medical?: string;
-  photo?: File;
+  photo?: FileList;
 };
 
 function RecommendationResults({ results }: { results: any }) {
@@ -72,18 +72,20 @@ function RecommendationResults({ results }: { results: any }) {
             <Dumbbell className="h-5 w-5" />
             Workout Plan
           </h3>
-          <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md border p-4">
-            {results.workoutPlan}
-          </div>
+          <div
+            className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-4"
+            dangerouslySetInnerHTML={{ __html: results.workoutPlan.replace(/\n/g, '<br>') }}
+          />
         </div>
         <div>
           <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
             <Pizza className="h-5 w-5" />
             Diet & Nutrition
           </h3>
-          <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap rounded-md border p-4">
-            {results.dietPlan}
-          </div>
+          <div
+            className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-4"
+            dangerouslySetInnerHTML={{ __html: results.dietPlan.replace(/\n/g, '<br>') }}
+          />
         </div>
       </CardContent>
     </Card>
@@ -104,13 +106,14 @@ export default function RecommendationsPage() {
     },
   });
 
+  const photoRef = form.register('photo');
+
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setPhotoPreview(reader.result as string);
-        form.setValue('photo', file);
       };
       reader.readAsDataURL(file);
     }
@@ -131,12 +134,13 @@ export default function RecommendationsPage() {
     }
 
     let photoDataUri: string | undefined;
-    if (values.photo) {
+    const photoFile = values.photo?.[0];
+    if (photoFile) {
       photoDataUri = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
         reader.onerror = reject;
-        reader.readAsDataURL(values.photo!);
+        reader.readAsDataURL(photoFile);
       });
     }
 
@@ -202,7 +206,7 @@ export default function RecommendationsPage() {
                                 {...field}
                                 onChange={(e) =>
                                   field.onChange(
-                                    parseInt(e.target.value, 10) || 0
+                                    parseInt(e.target.value, 10) || undefined
                                   )
                                 }
                               />
@@ -224,7 +228,7 @@ export default function RecommendationsPage() {
                                 {...field}
                                 onChange={(e) =>
                                   field.onChange(
-                                    parseInt(e.target.value, 10) || 0
+                                    parseInt(e.target.value, 10) || undefined
                                   )
                                 }
                               />
@@ -246,7 +250,7 @@ export default function RecommendationsPage() {
                                 {...field}
                                 onChange={(e) =>
                                   field.onChange(
-                                    parseInt(e.target.value, 10) || 0
+                                    parseInt(e.target.value, 10) || undefined
                                   )
                                 }
                               />
@@ -344,16 +348,13 @@ export default function RecommendationsPage() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="photo"
-                      render={() => (
-                        <FormItem>
+                    <FormItem>
                           <FormLabel>Full Body Photo (Optional)</FormLabel>
                           <FormControl>
                             <Input
                               type="file"
                               accept="image/*"
+                              {...photoRef}
                               onChange={handlePhotoChange}
                             />
                           </FormControl>
@@ -363,8 +364,6 @@ export default function RecommendationsPage() {
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
-                      )}
-                    />
 
                     {photoPreview && (
                       <div className="flex justify-center">

@@ -2,8 +2,8 @@
 
 import {
   generateRecommendations,
-  type GenerateRecommendationsInput,
 } from '@/ai/flows/generate-recommendations';
+import type { GenerateRecommendationsInput } from '@/ai/flows/recommendations.d';
 
 export async function getAiRecommendations(
   input: GenerateRecommendationsInput

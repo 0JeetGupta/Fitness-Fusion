@@ -49,5 +49,3 @@ const generateRecommendationsFlow = ai.defineFlow(
     return output!;
   }
 );
-
-export { type GenerateRecommendationsInput, type GenerateRecommendationsOutput };
