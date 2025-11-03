@@ -58,20 +58,22 @@ Based on this information, provide a comprehensive and actionable plan.
 
 ## Workout Plan
 
-Generate a detailed workout plan. It should be easy to follow.
-- Start with a summary of the approach (e.g., "This is a 4-day/week plan focusing on...").
-- Use Markdown headings (like '### Week 1-4: Foundation') and bullet points.
-- Structure the workout by days (e.g., '#### Day 1: Full Body Strength', '#### Day 2: Cardio & Core').
-- For each day, list the exercises as a bulleted list (e.g., '- Squats: 3 sets x 10-12 reps').
-- Include a 'Rest and Recovery' section.
+Generate a detailed workout plan that is spacious and easy to follow.
+- Start with a brief, encouraging summary of the approach.
+- Use '###' for weekly structure (e.g., '### Week 1-4: Foundation Phase').
+- Use '####' for each workout day (e.g., '#### Day 1: Full Body Strength').
+- Under each day, list exercises as a bulleted list. Be specific (e.g., '- **Squats:** 3 sets of 10-12 reps').
+- Include a '#### Rest and Recovery' section with tips on rest days, stretching, and sleep.
 
 ## Diet & Nutrition Plan
 
-Generate a detailed diet and nutrition plan.
-- Start with a summary of the dietary strategy.
-- Use Markdown headings for different sections (e.g., '### Daily Caloric Goal', '### Macronutrient Split').
-- Provide sample meal ideas using a bulleted list for Breakfast, Lunch, and Dinner.
-- **IMPORTANT**: You MUST strictly adhere to any medical conditions, deficiencies, or allergies mentioned. If the user mentions an allergy (e.g., peanuts), do not include that ingredient in your suggestions. If no medical information is given, create a general healthy plan and explicitly state that they should consult with a healthcare professional before starting any new diet.
+Generate a detailed diet and nutrition plan that is clean and easy to scan.
+- Start with a summary of the dietary strategy and estimated daily caloric intake.
+- Use '###' for macronutrient breakdown (e.g., '### Macronutrient Split').
+- Use '###' for Sample Meal Ideas.
+- Under Sample Meal Ideas, use '####' for each meal (e.g., '#### Breakfast', '#### Lunch', '#### Dinner', '#### Snacks').
+- For each meal, provide 2-3 options as a bulleted list.
+- **IMPORTANT**: You MUST strictly adhere to any medical conditions, deficiencies, or allergies mentioned. If the user mentions an allergy (e.g., peanuts), do not include that ingredient. If no medical information is given, create a general healthy plan and explicitly state that they should consult with a healthcare professional before starting any new diet.
 
 Format your entire response as a single JSON object that conforms to the output schema.
 `,

@@ -71,7 +71,7 @@ function RecommendationResults({ results }: { results: GenerateRecommendationsOu
             Workout Plan
           </h3>
           <div
-            className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-headline prose-headings:text-foreground"
+            className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-headline prose-headings:text-foreground prose-h3:mt-6 prose-h4:mt-4 prose-ul:my-3 prose-li:my-1"
           >
             <ReactMarkdown>{results.workoutPlan}</ReactMarkdown>
           </div>
@@ -82,7 +82,7 @@ function RecommendationResults({ results }: { results: GenerateRecommendationsOu
             Diet & Nutrition
           </h3>
           <div
-            className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-headline prose-headings:text-foreground"
+            className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-headline prose-headings:text-foreground prose-h3:mt-6 prose-h4:mt-4 prose-ul:my-3 prose-li:my-1"
           >
              <ReactMarkdown>{results.dietPlan}</ReactMarkdown>
           </div>
@@ -260,7 +260,7 @@ export default function RecommendationsPage() {
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="How active are you?" />
-                              </SelectTrigger>
+                              </Trigger>
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="sedentary">
@@ -357,5 +357,3 @@ export default function RecommendationsPage() {
     </>
   );
 }
-
-  
