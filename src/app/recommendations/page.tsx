@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -11,11 +12,9 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import {
-  FormField,
   FormItem,
   FormLabel,
   FormControl,
-  FormMessage,
   FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -36,10 +35,18 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import ReactMarkdown from 'react-markdown';
 import type { GenerateRecommendationsInput, GenerateRecommendationsOutput } from '@/ai/flows/generate-recommendations';
 
-type RecommendationFormValues = Omit<GenerateRecommendationsInput, 'photoDataUri'> & {
+// We define the form values type here on the client
+type RecommendationFormValues = {
+  age: number;
+  weight: number;
+  height: number;
+  goal: 'lose_weight' | 'bulk_up' | 'get_fit';
+  activityLevel: 'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active';
+  medical?: string;
   photo?: FileList;
 };
 
+// This is the results component. It doesn't need to import any server types.
 function RecommendationResults({ results }: { results: GenerateRecommendationsOutput | null }) {
   if (!results) {
     return null;
@@ -112,7 +119,7 @@ export default function RecommendationsPage() {
     }
   };
 
-  const handleSubmit = async (values: RecommendationFormValues) => {
+  const handleSubmit: SubmitHandler<RecommendationFormValues> = async (values) => {
     setIsLoading(true);
     setRecommendations(null);
 
@@ -138,13 +145,16 @@ export default function RecommendationsPage() {
     }
 
     try {
-      const result = await getAiRecommendations({
+      // Cast the form values to the server action's expected input type
+      const input: GenerateRecommendationsInput = {
         ...values,
         age: Number(values.age),
         weight: Number(values.weight),
         height: Number(values.height),
         photoDataUri,
-      });
+      };
+      
+      const result = await getAiRecommendations(input);
       setRecommendations(result);
       toast({
         title: 'Recommendations Generated!',
@@ -186,163 +196,103 @@ export default function RecommendationsPage() {
                     className="space-y-6"
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="age"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Age</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="e.g., 25"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseInt(e.target.value, 10) || undefined
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="weight"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Weight (kg)</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="e.g., 70"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseInt(e.target.value, 10) || undefined
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="height"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Height (cm)</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="number"
-                                placeholder="e.g., 180"
-                                {...field}
-                                value={field.value || ''}
-                                onChange={(e) =>
-                                  field.onChange(
-                                    parseInt(e.target.value, 10) || undefined
-                                  )
-                                }
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                        <FormItem>
+                          <FormLabel>Age</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="e.g., 25"
+                              {...form.register('age', { valueAsNumber: true })}
+                            />
+                          </FormControl>
+                        </FormItem>
+                        <FormItem>
+                          <FormLabel>Weight (kg)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="e.g., 70"
+                              {...form.register('weight', { valueAsNumber: true })}
+                            />
+                          </FormControl>
+                        </FormItem>
+                        <FormItem>
+                          <FormLabel>Height (cm)</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              placeholder="e.g., 180"
+                              {...form.register('height', { valueAsNumber: true })}
+                            />
+                          </FormControl>
+                        </FormItem>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="goal"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Primary Goal</FormLabel>
+                        <FormItem>
+                          <FormLabel>Primary Goal</FormLabel>
                             <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                              onValueChange={(value) => form.setValue('goal', value as RecommendationFormValues['goal'])}
+                              defaultValue={form.getValues('goal')}
                             >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select your main goal" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="lose_weight">
-                                  Lose Weight
-                                </SelectItem>
-                                <SelectItem value="bulk_up">Bulk Up</SelectItem>
-                                <SelectItem value="get_fit">
-                                  Get Fit & Healthy
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="activityLevel"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Activity Level</FormLabel>
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select your main goal" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="lose_weight">
+                                Lose Weight
+                              </SelectItem>
+                              <SelectItem value="bulk_up">Bulk Up</SelectItem>
+                              <SelectItem value="get_fit">
+                                Get Fit & Healthy
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                        <FormItem>
+                          <FormLabel>Activity Level</FormLabel>
+                           <Select
+                              onValueChange={(value) => form.setValue('activityLevel', value as RecommendationFormValues['activityLevel'])}
+                              defaultValue={form.getValues('activityLevel')}
                             >
-                              <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="How active are you?" />
-                                </SelectTrigger>
-                              </FormControl>
-                              <SelectContent>
-                                <SelectItem value="sedentary">
-                                  Sedentary (little to no exercise)
-                                </SelectItem>
-                                <SelectItem value="lightly_active">
-                                  Lightly Active (1-2 days/week)
-                                </SelectItem>
-                                <SelectItem value="moderately_active">
-                                  Moderately Active (3-5 days/week)
-                                </SelectItem>
-                                <SelectItem value="very_active">
-                                  Very Active (6-7 days/week)
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="How active are you?" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="sedentary">
+                                Sedentary (little to no exercise)
+                              </SelectItem>
+                              <SelectItem value="lightly_active">
+                                Lightly Active (1-2 days/week)
+                              </SelectItem>
+                              <SelectItem value="moderately_active">
+                                Moderately Active (3-5 days/week)
+                              </SelectItem>
+                              <SelectItem value="very_active">
+                                Very Active (6-7 days/week)
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
                     </div>
 
-                    <FormField
-                      control={form.control}
-                      name="medical"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Medical Conditions</FormLabel>
-                          <FormControl>
-                            <Textarea
-                              placeholder="List any diseases, deficiencies, or allergies (e.g., lactose intolerant, peanut allergy)"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            This helps the AI create a safe and effective plan
-                            for you.
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                      <FormItem>
+                        <FormLabel>Medical Conditions</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="List any diseases, deficiencies, or allergies (e.g., lactose intolerant, peanut allergy)"
+                            {...form.register('medical')}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          This helps the AI create a safe and effective plan
+                          for you.
+                        </FormDescription>
+                      </FormItem>
 
                     <FormItem>
                           <FormLabel>Full Body Photo (Optional)</FormLabel>
