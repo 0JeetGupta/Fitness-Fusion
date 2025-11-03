@@ -14,7 +14,26 @@ import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from './ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
-import { Settings, User as UserIcon } from 'lucide-react';
+import { Settings, User as UserIcon, Menu } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import { cn } from '@/lib/utils';
+import React from 'react';
 
 export function KhelKhojIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -101,10 +120,60 @@ function UserNav() {
   );
 }
 
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+            className
+          )}
+          {...props}
+        >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  )
+})
+ListItem.displayName = "ListItem"
+
+
+export function NavMenu() {
+  return (
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <Link href="/" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Dashboard
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/recommendations" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Recommendations
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
+  )
+}
+
 
 export function Header() {
   return (
-    <header className="bg-card shadow-sm">
+    <header className="bg-card shadow-sm sticky top-0 z-50">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
           <KhelKhojIcon className="h-6 w-6 text-primary" />
@@ -112,7 +181,41 @@ export function Header() {
             Khel Khoj
           </span>
         </Link>
-        <UserNav />
+        <div className="hidden md:flex">
+          <NavMenu />
+        </div>
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex">
+            <UserNav />
+          </div>
+          <div className="md:hidden">
+             <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>
+                     <Link href="/" className="flex items-center gap-2">
+                      <KhelKhojIcon className="h-6 w-6 text-primary" />
+                      <span className="text-xl font-bold font-headline text-foreground">
+                        Khel Khoj
+                      </span>
+                    </Link>
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="py-4">
+                  <NavMenu />
+                </div>
+                 <div className="absolute bottom-4 right-4">
+                   <UserNav />
+                 </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
       </div>
     </header>
   );

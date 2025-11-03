@@ -30,7 +30,9 @@ import { useAuth } from '@/hooks/use-auth';
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
-function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: boolean }) {
+function TestGrid() {
+  const { user, loading } = useAuth();
+  const isLoggedIn = !loading && !!user;
   const { toast } = useToast();
   const router = useRouter();
 
@@ -49,7 +51,7 @@ function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: b
     }
   };
 
-  if (isLoading) {
+  if (loading) {
     return (
       <Card className="col-span-1 md:col-span-2 lg:col-span-3">
         <CardHeader>
@@ -213,14 +215,16 @@ export default function Home() {
         <div className="container mx-auto py-8 px-4 md:px-6">
           <div className="space-y-4 mb-8 welcome-text">
             <h1 className="text-3xl font-bold font-headline">
-              {isLoggedIn ? `Welcome, ${user?.displayName || 'Athlete'}!` : 'Welcome, Athlete!'}
+              {isLoggedIn ? `Welcome, ${user?.displayName || 'Athlete'}!` : 'Welcome to Khel Khoj!'}
             </h1>
             <p className="text-muted-foreground">
-              Your journey to greatness starts here. Assess your skills, track your progress, and get discovered.
+              {isLoggedIn
+                ? 'Your journey to greatness starts here. Assess your skills, track your progress, and get discovered.'
+                : 'The AI-Powered Mobile Platform for Democratizing Sports Talent Assessment. Log in to get started.'}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <TestGrid isLoggedIn={isLoggedIn} isLoading={loading} />
+            <TestGrid />
             <MyBadges />
             <Leaderboard />
           </div>
