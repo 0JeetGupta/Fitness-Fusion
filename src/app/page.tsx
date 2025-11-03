@@ -25,8 +25,28 @@ import { ArrowRight, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUser } from '@/firebase';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
 function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: boolean }) {
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const handleTestClick = (testId: string) => {
+    if (!isLoggedIn) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please log in to start an assessment.',
+        variant: 'destructive',
+        action: (
+           <Button onClick={() => router.push('/login')}>Login</Button>
+        ),
+      });
+    } else {
+      router.push(`/tests/${testId}`);
+    }
+  };
+
   if (isLoading) {
     return (
       <Card className="col-span-1 md:col-span-2 lg:col-span-3">
@@ -75,10 +95,8 @@ function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: b
               <p className="text-sm text-muted-foreground mb-4">
                 {test.description}
               </p>
-              <Button asChild size="sm" className="w-full" disabled={!isLoggedIn}>
-                <Link href={isLoggedIn ? `/tests/${test.id}`: '#'}>
+              <Button onClick={() => handleTestClick(test.id)} size="sm" className="w-full">
                   Start Test <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
               </Button>
             </CardContent>
           </Card>
