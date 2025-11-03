@@ -27,6 +27,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 
 function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: boolean }) {
   const { toast } = useToast();
@@ -72,7 +74,7 @@ function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: b
   }
 
   return (
-    <Card className="col-span-1 md:col-span-2 lg:col-span-3">
+    <Card className="col-span-1 md:col-span-2 lg:col-span-3 dashboard-card">
       <CardHeader>
         <CardTitle className="font-headline">Start Your Assessment</CardTitle>
         <CardDescription>
@@ -109,7 +111,7 @@ function TestGrid({ isLoggedIn, isLoading }: { isLoggedIn: boolean, isLoading: b
 function MyBadges() {
   const earnedBadges = badges.slice(0, 4); // Simulate earned badges
   return (
-    <Card className="col-span-1 md:col-span-2 lg:col-span-2">
+    <Card className="col-span-1 md:col-span-2 lg:col-span-2 dashboard-card">
       <CardHeader>
         <CardTitle className="font-headline">My Badges</CardTitle>
         <CardDescription>
@@ -138,7 +140,7 @@ function MyBadges() {
 
 function Leaderboard() {
   return (
-    <Card className="col-span-1 md:col-span-2 lg:col-span-1">
+    <Card className="col-span-1 md:col-span-2 lg:col-span-1 dashboard-card">
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="space-y-1">
           <CardTitle className="font-headline">Leaderboard</CardTitle>
@@ -181,13 +183,35 @@ function Leaderboard() {
 export default function Home() {
   const { user, loading } = useAuth();
   const isLoggedIn = !loading && !!user;
+  const mainRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from('.dashboard-card', {
+        opacity: 0,
+        y: 20,
+        duration: 0.5,
+        stagger: 0.1,
+        ease: 'power3.out',
+      });
+      gsap.from('.welcome-text', {
+        opacity: 0,
+        y: -20,
+        duration: 0.5,
+        ease: 'power3.out',
+      })
+    }, mainRef);
+
+    return () => ctx.revert();
+  }, [loading]);
+
 
   return (
     <>
       <Header />
-      <main className="flex-1">
+      <main ref={mainRef} className="flex-1">
         <div className="container mx-auto py-8 px-4 md:px-6">
-          <div className="space-y-4 mb-8">
+          <div className="space-y-4 mb-8 welcome-text">
             <h1 className="text-3xl font-bold font-headline">
               {isLoggedIn ? `Welcome, ${user?.displayName || 'Athlete'}!` : 'Welcome, Athlete!'}
             </h1>
