@@ -51,8 +51,8 @@ User's Information:
 - Height: {{height}} cm
 - Primary Goal: {{goal}}
 - Activity Level: {{activityLevel}}
-{{#if medical}}- Medical Conditions/Allergies: {{{medical}}}{{#if}}
-{{#if photoDataUri}}- Photo: {{media url=photoDataUri}}{{#if}}
+{{#if medical}}- Medical Conditions/Allergies: {{{medical}}}{{/if}}
+{{#if photoDataUri}}- Photo: {{media url=photoDataUri}}{{/if}}
 
 Based on this information, provide a comprehensive and actionable plan.
 
@@ -94,5 +94,3 @@ const generateRecommendationsFlow = ai.defineFlow(
 export async function generateRecommendations(input: GenerateRecommendationsInput): Promise<GenerateRecommendationsOutput> {
   return generateRecommendationsFlow(input);
 }
-
-  
