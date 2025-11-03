@@ -35,7 +35,7 @@ export type GenerateRecommendationsInput = z.infer<typeof GenerateRecommendation
 
 const GenerateRecommendationsOutputSchema = z.object({
   workoutPlan: z.string().describe("A detailed, easy-to-read workout plan in Markdown format. It should specify frequency (days per week), types of exercises (cardio, strength, flexibility), and specific examples of exercises for each category. Explain why this plan is suitable for the user's goal."),
-  dietPlan: z.string().describe("A detailed, easy-to-read diet and nutrition plan in Markdown format. It should provide general guidelines, macronutrient balance suggestions, and sample meal ideas for breakfast, lunch, and dinner. CRUCIALLY, it must explicitly mention and accommodate the user's stated medical conditions, allergies, or deficiencies. If none are provided, state that the plan is general and they should consult a doctor."),
+  dietPlan: z.string().describe("A detailed, easy-to-read diet and nutrition plan in Markdown format. It should provide general guidelines, macronutrient balance suggestions, and sample meal ideas for breakfast, lunch, and dinner. CRUCIALLY, it must explicitly mention and accommodate the user's stated medical conditions, allergies, or deficiencies. If none are provided, state that the plan is a general recommendation and they should consult a doctor."),
 });
 export type GenerateRecommendationsOutput = z.infer<typeof GenerateRecommendationsOutputSchema>;
 
@@ -43,7 +43,7 @@ const prompt = ai.definePrompt({
   name: 'generateRecommendationsPrompt',
   input: { schema: GenerateRecommendationsInputSchema },
   output: { schema: GenerateRecommendationsOutputSchema },
-  prompt: `You are an expert fitness coach and registered dietitian. Your task is to create a personalized workout and diet plan based on the user's information. Be encouraging, clear, and professional.
+  prompt: `You are an expert fitness coach and registered dietitian. Your task is to create a personalized workout and diet plan based on the user's information. Be encouraging, clear, and professional. The output MUST be in user-friendly and easy-to-read Markdown format.
 
 User's Information:
 - Age: {{age}}
@@ -51,14 +51,27 @@ User's Information:
 - Height: {{height}} cm
 - Primary Goal: {{goal}}
 - Activity Level: {{activityLevel}}
-{{#if medical}}- Medical Conditions/Allergies: {{{medical}}}{{/if}}
-{{#if photoDataUri}}- Photo: {{media url=photoDataUri}}{{/if}}
+{{#if medical}}- Medical Conditions/Allergies: {{{medical}}}{{#if}}
+{{#if photoDataUri}}- Photo: {{media url=photoDataUri}}{{#if}}
 
 Based on this information, provide a comprehensive and actionable plan.
 
-Generate a detailed workout plan. It should be easy to follow. Include the number of workout days per week, and a mix of exercises (e.g., Cardio, Strength, Flexibility). Present this plan in Markdown format.
+## Workout Plan
 
-Then, generate a detailed diet and nutrition plan. Provide sample meals. **IMPORTANT**: You MUST strictly adhere to any medical conditions, deficiencies, or allergies mentioned. If the user mentions an allergy (e.g., peanuts), do not include that ingredient in your suggestions. If no medical information is given, create a general healthy plan and explicitly state that they should consult with a healthcare professional before starting any new diet. Present this plan in Markdown format.
+Generate a detailed workout plan. It should be easy to follow.
+- Start with a summary of the approach (e.g., "This is a 4-day/week plan focusing on...").
+- Use Markdown headings (like '### Week 1-4: Foundation') and bullet points.
+- Structure the workout by days (e.g., '#### Day 1: Full Body Strength', '#### Day 2: Cardio & Core').
+- For each day, list the exercises as a bulleted list (e.g., '- Squats: 3 sets x 10-12 reps').
+- Include a 'Rest and Recovery' section.
+
+## Diet & Nutrition Plan
+
+Generate a detailed diet and nutrition plan.
+- Start with a summary of the dietary strategy.
+- Use Markdown headings for different sections (e.g., '### Daily Caloric Goal', '### Macronutrient Split').
+- Provide sample meal ideas using a bulleted list for Breakfast, Lunch, and Dinner.
+- **IMPORTANT**: You MUST strictly adhere to any medical conditions, deficiencies, or allergies mentioned. If the user mentions an allergy (e.g., peanuts), do not include that ingredient in your suggestions. If no medical information is given, create a general healthy plan and explicitly state that they should consult with a healthcare professional before starting any new diet.
 
 Format your entire response as a single JSON object that conforms to the output schema.
 `,
@@ -81,3 +94,5 @@ const generateRecommendationsFlow = ai.defineFlow(
 export async function generateRecommendations(input: GenerateRecommendationsInput): Promise<GenerateRecommendationsOutput> {
   return generateRecommendationsFlow(input);
 }
+
+  

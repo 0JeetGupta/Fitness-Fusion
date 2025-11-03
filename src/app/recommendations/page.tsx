@@ -65,24 +65,24 @@ function RecommendationResults({ results }: { results: GenerateRecommendationsOu
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div>
-          <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-            <Dumbbell className="h-5 w-5" />
+        <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+          <h3 className="font-bold text-xl mb-4 flex items-center gap-2 font-headline">
+            <Dumbbell className="h-5 w-5 text-primary" />
             Workout Plan
           </h3>
           <div
-            className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-4"
+            className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-headline prose-headings:text-foreground"
           >
             <ReactMarkdown>{results.workoutPlan}</ReactMarkdown>
           </div>
         </div>
-        <div>
-          <h3 className="font-bold text-lg mb-2 flex items-center gap-2">
-            <Pizza className="h-5 w-5" />
+        <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+          <h3 className="font-bold text-xl mb-4 flex items-center gap-2 font-headline">
+            <Pizza className="h-5 w-5 text-primary" />
             Diet & Nutrition
           </h3>
           <div
-            className="prose prose-sm dark:prose-invert max-w-none rounded-md border p-4"
+            className="prose prose-sm dark:prose-invert max-w-none prose-headings:font-headline prose-headings:text-foreground"
           >
              <ReactMarkdown>{results.dietPlan}</ReactMarkdown>
           </div>
@@ -357,3 +357,5 @@ export default function RecommendationsPage() {
     </>
   );
 }
+
+  
