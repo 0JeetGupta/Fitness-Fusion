@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Send, MessageSquare } from 'lucide-react';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, serverTimestamp, type Timestamp } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import { useCollection } from '@/firebase/firestore/use-collection';
 import { cn } from '@/lib/utils';
@@ -18,7 +18,7 @@ import { FirestorePermissionError } from '@/firebase/errors';
 interface Message {
   id: string;
   text: string;
-  createdAt: any;
+  createdAt: Timestamp | null;
   user: {
     uid: string;
     displayName: string;
@@ -28,9 +28,9 @@ interface Message {
 }
 
 const levelColorMap = {
-  Pro: 'text-accent',
+  Pro: 'text-accent-foreground dark:text-accent',
   Intermediate: 'text-primary',
-  Rookie: 'text-secondary-foreground',
+  Rookie: 'text-muted-foreground',
 };
 
 export default function CommunityPage() {
@@ -40,7 +40,7 @@ export default function CommunityPage() {
   const { data: messages, loading: messagesLoading } = useCollection<Message>('community-chat');
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   
-  const sortedMessages = messages ? [...messages].sort((a, b) => a.createdAt?.seconds - b.createdAt?.seconds) : [];
+  const sortedMessages = messages ? [...messages].sort((a, b) => (a.createdAt?.seconds ?? 0) - (b.createdAt?.seconds ?? 0)) : [];
 
 
   const scrollToBottom = () => {
@@ -80,6 +80,13 @@ export default function CommunityPage() {
       });
   };
 
+  const formatTimestamp = (timestamp: Timestamp | null) => {
+    if (!timestamp || !timestamp.seconds) {
+      return '';
+    }
+    return new Date(timestamp.seconds * 1000).toLocaleTimeString();
+  };
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -114,7 +121,7 @@ export default function CommunityPage() {
                       </p>
                       <p className="text-sm">{msg.text}</p>
                        <p className="text-xs opacity-70 mt-1">
-                        {new Date(msg.createdAt?.seconds * 1000).toLocaleTimeString()}
+                        {formatTimestamp(msg.createdAt)}
                       </p>
                     </div>
                      {msg.user.uid === user?.id && (
