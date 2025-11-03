@@ -25,6 +25,33 @@
         }
       },
       "required": ["uid", "displayName", "email", "createdAt"]
+    },
+    "CommunityMessage": {
+      "title": "Community Message",
+      "description": "Represents a single message in the community chat.",
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "The timestamp when the message was sent."
+        },
+        "user": {
+          "type": "object",
+          "properties": {
+            "uid": { "type": "string" },
+            "displayName": { "type": "string" },
+            "photoURL": { "type": "string" },
+            "level": { "type": "string", "enum": ["Pro", "Intermediate", "Rookie"] }
+          },
+          "required": ["uid", "displayName"]
+        }
+      },
+      "required": ["text", "createdAt", "user"]
     }
   },
   "auth": {
@@ -36,6 +63,12 @@
         "$ref": "#/entities/UserProfile"
       },
       "description": "Stores public profile information for each user."
+    },
+    "/community-chat/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/CommunityMessage"
+      },
+      "description": "Stores messages for the global community chat."
     }
   }
 }

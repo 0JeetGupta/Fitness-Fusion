@@ -15,7 +15,7 @@ import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
 import { Skeleton } from './ui/skeleton';
 import { useAuth } from '@/hooks/use-auth';
-import { Settings, User as UserIcon, Menu } from 'lucide-react';
+import { Settings, User as UserIcon, Menu, MessageSquare } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -121,7 +121,7 @@ export function NavMenu() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <Link href="/" legacyBehavior passHref>
+           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Dashboard
             </NavigationMenuLink>
@@ -131,6 +131,13 @@ export function NavMenu() {
           <Link href="/recommendations" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
               Recommendations
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <Link href="/community" legacyBehavior passHref>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              Community
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
