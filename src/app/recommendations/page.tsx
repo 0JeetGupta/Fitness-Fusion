@@ -255,7 +255,7 @@ export default function RecommendationsPage() {
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="How active are you?" />
-                              </Trigger>
+                              </SelectTrigger>
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="sedentary">
